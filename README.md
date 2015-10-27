@@ -1,5 +1,10 @@
-# arduino-thermal-camera
-Extremely cheap thermal camera, up to $60
+## arduino-thermal-camera
+
+####Extremely cheap thermal camera, up to $50!
+
+The idea is taken from this [project](http://www.centralnexus.com/thermal/).
+
+Now I've ordered some parts from aliexpress and waiting for start assembling my camera.
 
 
 | Item name                                                                                                         | url                                                                                                                                                 | Amount | Price |
