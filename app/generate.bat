@@ -1,0 +1,1 @@
+pyuic5 ui/ThremalScan.ui > ui_ThermalScan.py
