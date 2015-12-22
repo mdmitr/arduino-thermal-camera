@@ -34,7 +34,8 @@ class Ui_ThermalScanDialog(QtWidgets.QDialog, ui_ThermalScan.Ui_ThermalScanDialo
 		self.mainImage.setPixmap(self.mQPixmap.scaled(ww, hh, Qt.KeepAspectRatio))
 
 	def handle_Scan(self, param):
-		
+		if (self.cap.isOpened() == False):
+			return		
 		ret, frame = self.cap.read()
 		print(ret)
 		self.cvImage = frame
