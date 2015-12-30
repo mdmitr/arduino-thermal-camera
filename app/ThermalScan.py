@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 
 import cv2
 
+from ArduinoCtrl import ArduinoCtrl
 import ui_ThermalScan
 
 
@@ -29,6 +30,8 @@ class Ui_ThermalScanDialog(QtWidgets.QDialog, ui_ThermalScan.Ui_ThermalScanDialo
         self.mQPixmap = QPixmap.fromImage(self.mQImage)
 
         self.mainImage.resizeEvent = self.imageResizeEvent
+
+        self.mArduinoCtrl = ArduinoCtrl()
 
     def imageResizeEvent(self, event):
         ww = self.mainImage.width() - 2
