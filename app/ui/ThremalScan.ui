@@ -81,6 +81,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="pushButton_Options">
+         <property name="text">
+          <string>Options...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="pushButton_Close">
          <property name="text">
           <string>Close</string>
