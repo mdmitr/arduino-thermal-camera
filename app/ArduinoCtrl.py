@@ -20,14 +20,21 @@ class ArduinoCtrl():
         self.mThermalImage = None    # thermal image
         return
 
-    def MoveToPoint(self, x, y):
+    @staticmethod
+    def MoveToPoint(x, y):
         return
 
-    def CalibrateTopLeft(self, x, y):
+
+    @staticmethod
+    def CalibrateTopLeft(x, y):
         return false
 
+
+    @staticmethod
     def CalibrateBottomRight(self, x, y):
         return false
 
+
+    @staticmethod
     def MeasureTemperature(self, x, y):
         return 0
