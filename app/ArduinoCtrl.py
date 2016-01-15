@@ -1,40 +1,38 @@
+from PyQt5.QtCore import QObject, pyqtSignal
 
-class ArduinoCtrl():
+class Command:
+    lr = 0,  # calls left-right servo setMicroSeconds, or getMicroseconds if parameter is ?
+    ud = 1,  # calls up-down servo setMicroSeconds, or getMicroseconds if parameter is ?
+    srv = 2, # calls for both servos setMicroSeconds, or getMicroseconds if parameter is ?
+    t = 3    # get temperature at current point
+
+class ArduinoCtrl(QObject):
+
+    lr_servo_changed = pyqtSignal(int)
+    ud_servo_changed = pyqtSignal(int)
+
 
     def __init__(self):
-        self.mPosX = -1  # current X position in camera image
-        self.mPosY = -1  # current Y position in camera image
-        self.mMinX = -1  # minimum X position in camera image
-        self.mMaxX = -1  # maximum X position in camera image
-        self.mMinY = -1  # minimum Y position in camera image
-        self.mMaxY = -1  # maximum Y position in camera image
+        super().__init__()
 
-        # servos settings (to be calibrated)
-        self.mServoMinX = -1
-        self.mServoMaxX = -1
-        self.mServoMinY = -1
-        self.mServoMaxY = -1
-
-        # Images
-        self.mCameraImage = None     # image from web camera (set externally)
-        self.mThermalImage = None    # thermal image
+        self.lrServoMS = int(self.execute_command(Command.lr, '-1'))
+        self.udServoMS = int(self.execute_command(Command.ud, '-1'))
         return
 
-    @staticmethod
-    def MoveToPoint(x, y):
-        return
+    def execute_command(self, command, params):
+        arduino_command = "{0} {1}".format(command, params)
+        return params
+
+    def set_lr_servo(self, ms):
+        self.lrServoMS = int(self.execute_command(Command.lr, ms))
+        self.lr_servo_changed.emit(self.lrServoMS)
+
+    def set_ud_servo(self, ms):
+        self.udServoMS = int(self.execute_command(Command.ud, ms))
+        self.ud_servo_changed.emit(self.udServoMS)
 
 
-    @staticmethod
-    def CalibrateTopLeft(x, y):
-        return false
+
+arduinoCtrl = ArduinoCtrl()
 
 
-    @staticmethod
-    def CalibrateBottomRight(self, x, y):
-        return false
-
-
-    @staticmethod
-    def MeasureTemperature(self, x, y):
-        return 0

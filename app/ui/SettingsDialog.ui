@@ -190,7 +190,7 @@
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QRadioButton" name="rb_lrCenter_2">
+          <widget class="QRadioButton" name="rb_udCenter">
            <property name="text">
             <string>Center microseconds</string>
            </property>

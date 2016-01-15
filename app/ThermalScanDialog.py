@@ -1,3 +1,6 @@
+import json
+import os.path
+
 from PyQt5.QtCore import (QObject, pyqtSignal, Qt)
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import *
@@ -7,6 +10,7 @@ import cv2
 from ArduinoCtrl import ArduinoCtrl
 from SettingsDialog import SettingsDialog
 from Ui_ThermalScanDialog import Ui_ThermalScanDialog
+import Settings
 
 class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
 
@@ -17,6 +21,11 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         self.pushButton_Close.clicked.connect(self.handle_close)
         self.pushButton_Scan.clicked.connect(self.handle_scan)
         self.pushButton_Settings.clicked.connect(self.handle_settings)
+
+        # read settings
+        if (os.path.isfile('settings.json')):
+            with open('settings.json', 'r') as f:
+                Settings.settings = json.load(f)
 
         image_file = r'../image_processing/edge_detection/pic3.jpg'
         self.cvImage = cv2.imread(image_file)
@@ -69,10 +78,5 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         self.mSettingsDialog.exec_()
 
     def handle_close(self):
-
-        ww = self.mainImage.width() - 2
-        hh = self.mainImage.height() - 2
-        self.mainImage.setPixmap(self.mQPixmap.scaled(ww, hh, Qt.KeepAspectRatio))
-
-        self.mainImage.repaint()
+        exit()
 
