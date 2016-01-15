@@ -5,17 +5,18 @@ from PyQt5.QtGui import *
 import cv2
 
 from ArduinoCtrl import ArduinoCtrl
-import ui_ThermalScan
+from SettingsDialog import SettingsDialog
+from Ui_ThermalScanDialog import Ui_ThermalScanDialog
 
-
-class Ui_ThermalScanDialog(QtWidgets.QDialog, ui_ThermalScan.Ui_ThermalScanDialog):
+class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
 
     def __init__(self, parent=None):
-        super(Ui_ThermalScanDialog, self).__init__(parent)
+        super().__init__()
         self.setupUi(self)
         self.pushButton_Calibrate.clicked.connect(self.handle_calibrate)
         self.pushButton_Close.clicked.connect(self.handle_close)
         self.pushButton_Scan.clicked.connect(self.handle_scan)
+        self.pushButton_Settings.clicked.connect(self.handle_settings)
 
         image_file = r'../image_processing/edge_detection/pic3.jpg'
         self.cvImage = cv2.imread(image_file)
@@ -32,6 +33,7 @@ class Ui_ThermalScanDialog(QtWidgets.QDialog, ui_ThermalScan.Ui_ThermalScanDialo
         self.mainImage.resizeEvent = self.image_resize_event
 
         self.mArduinoCtrl = ArduinoCtrl()
+        self.mSettingsDialog = None
 
     def image_resize_event(self, event):
         ww = self.mainImage.width() - 2
@@ -60,7 +62,11 @@ class Ui_ThermalScanDialog(QtWidgets.QDialog, ui_ThermalScan.Ui_ThermalScanDialo
         pass
 
     def handle_calibrate(self):
-        print("Calibrate")
+        return
+
+    def handle_settings(self):
+        self.mSettingsDialog = SettingsDialog(self)
+        self.mSettingsDialog.exec_()
 
     def handle_close(self):
 
