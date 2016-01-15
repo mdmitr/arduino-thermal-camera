@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QDialogButtonBox, QProgressDialog
 import json
 
 from ArduinoCtrl import arduinoCtrl
-from CalibrateServo import CalibrateServo
+from CalibrateServoJob import CalibrateServoJob
 from Ui_SettingsDialog import Ui_SettingsDialog
 import Settings
 
@@ -75,7 +75,7 @@ class SettingsDialog(QtWidgets.QDialog, Ui_SettingsDialog):
             if self.cb_udSwap.isChecked():
                 min_ms, max_ms = max_ms, min_ms
 
-        calibrate_thread = CalibrateServo(servo_name, min_ms, max_ms)
+        calibrate_thread = CalibrateServoJob(servo_name, min_ms, max_ms)
         progress = QProgressDialog('Calibrating servo', 'Stop', min_ms, max_ms)
         arduinoCtrl.lr_servo_changed.connect(progress.setValue)
         arduinoCtrl.ud_servo_changed.connect(progress.setValue)

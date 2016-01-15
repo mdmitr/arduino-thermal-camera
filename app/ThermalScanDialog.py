@@ -1,13 +1,15 @@
 import json
 import os.path
 
-from PyQt5.QtCore import (QObject, pyqtSignal, Qt)
+from PyQt5.QtCore import (QObject, pyqtSignal, Qt, QThread)
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import *
 
 import cv2
+from PyQt5.QtWidgets import QProgressDialog, QApplication
 
 from ArduinoCtrl import ArduinoCtrl
+from RectangeScanJob import RectangleScanJob
 from SettingsDialog import SettingsDialog
 from Ui_ThermalScanDialog import Ui_ThermalScanDialog
 import Settings
@@ -51,8 +53,10 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
             self.mQPixmap.scaled(ww, hh, Qt.KeepAspectRatio))
 
     def handle_scan(self, param):
-        if not self.cap.isOpened():
-            return
+        rectangleScanJob = RectangleScanJob()
+        rectangleScanJob.start()
+
+    def test(self):
         ret, frame = self.cap.read()
         self.cvImage = frame
 
@@ -69,6 +73,7 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
             self.mQPixmap.scaled(ww, hh, Qt.KeepAspectRatio))
         self.mainImage.repaint()
         pass
+
 
     def handle_calibrate(self):
         return

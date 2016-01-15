@@ -1,8 +1,7 @@
 from PyQt5.QtCore import QThread
-
 from ArduinoCtrl import arduinoCtrl
 
-class CalibrateServo(QThread):
+class CalibrateServoJob(QThread):
     def __init__(self, servo_name, start_ms, stop_ms):
         super().__init__()
         self.servo_name = servo_name
