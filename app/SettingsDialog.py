@@ -36,6 +36,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_SettingsDialog):
         self.spin_udCenter.setValue(Settings.settings['udServoCenter'])
         self.cb_udSwap.setChecked(Settings.settings['udSwapDirection'])
 
+        for i in range(4):
+            self.cb_arduino_comport.addItem("COM{0}".format(i+1))
+        self.cb_arduino_comport.setCurrentIndex(Settings.settings['comport']-1)
+
     def setServoSpinMinMax(self, spin):
         spin.setMinimum(Settings.settings['servoMinMicroseconds'])
         spin.setMaximum(Settings.settings['servoMaxMicroseconds'])
@@ -54,6 +58,8 @@ class SettingsDialog(QtWidgets.QDialog, Ui_SettingsDialog):
         Settings.settings['udServoMax'] = self.spin_udMax.value()
         Settings.settings['udServoCenter'] = self.spin_udCenter.value()
         Settings.settings['udSwapDirection'] = self.cb_udSwap.isChecked()
+
+        Settings.settings['comport'] = self.cb_arduino_comport.currentIndex()+1
 
         with open('settings.json', 'w') as f:
             json.dump(Settings.settings, f)

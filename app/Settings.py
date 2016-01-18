@@ -2,6 +2,7 @@ from enum import Enum
 
 settings = {}
 
+settings['comport'] = 3
 settings['servoMinMicroseconds'] = 500
 settings['servoMaxMicroseconds'] = 2500
 

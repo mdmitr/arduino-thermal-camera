@@ -25,9 +25,13 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         self.pushButton_Settings.clicked.connect(self.handle_settings)
 
         # read settings
+        loaded_settings = {}
         if (os.path.isfile('settings.json')):
             with open('settings.json', 'r') as f:
-                Settings.settings = json.load(f)
+                loaded_settings = json.load(f)
+
+        Settings.settings.update(loaded_settings)
+
 
         image_file = r'../image_processing/edge_detection/pic3.jpg'
         self.cvImage = cv2.imread(image_file)
