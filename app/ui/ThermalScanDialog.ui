@@ -33,7 +33,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QListView" name="list_Images"/>
+            <widget class="QListWidget" name="list_images"/>
            </item>
           </layout>
          </item>
