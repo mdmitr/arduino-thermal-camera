@@ -7,7 +7,6 @@ class CalibrateServoJob(QThread):
         self.servo_name = servo_name
         self.start_ms = start_ms
         self.stop_ms = stop_ms
-        return
 
     def __del__(self):
         self.wait()
@@ -20,6 +19,7 @@ class CalibrateServoJob(QThread):
         return value
 
     def run(self):
+
         for ms in range(self.start_ms, self.stop_ms, max(1, (self.stop_ms-self.start_ms)/5000)):
             self.set_servo(ms)
             self.usleep(500)

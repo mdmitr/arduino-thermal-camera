@@ -13,6 +13,7 @@ class ArduinoCtrl(QObject):
     lr_servo_changed = pyqtSignal(int)
     ud_servo_changed = pyqtSignal(int)
 
+    test_temp = 12
 
     def __init__(self):
         super().__init__()
@@ -34,7 +35,9 @@ class ArduinoCtrl(QObject):
 
     def temperature(self, lr_ms, ud_ms):
         self.execute_command(Command.t, lr_ms, ud_ms)
-        return 120+random()*10
+        return 30+random()*50
+
+
 
 
 arduinoCtrl = ArduinoCtrl()

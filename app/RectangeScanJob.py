@@ -5,6 +5,7 @@ import Settings
 class RectangleScanJob(QThread):
 
     new_value = pyqtSignal(int, int, float)
+    progress = pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
@@ -24,9 +25,25 @@ class RectangleScanJob(QThread):
 
     def run(self):
 
-        for ud_ms in range(self.ud_min_ms, self.ud_max_ms, self.ud_step_ms):
-            for lr_ms in range(self.lr_min_ms, self.lr_max_ms, self.lr_step_ms):
-                temp = arduinoCtrl.temperature(lr_ms, ud_ms)
-                self.new_value.emit(lr_ms, ud_ms, temp)
+        x_pos = 0
+        y_pos = 0
+        cnt = 0
 
+        step_lr = self.lr_step_ms * Settings.settings['lrStep']
+        step_ud = self.ud_step_ms * Settings.settings['udStep']
+
+
+        for ud_ms in range(self.ud_min_ms, self.ud_max_ms, step_ud):
+            for lr_ms in range(self.lr_min_ms, self.lr_max_ms, step_lr):
+                temp = arduinoCtrl.temperature(lr_ms, ud_ms)
+                self.new_value.emit(x_pos, y_pos, temp)
+                #print('{0}, {1} : {2}'.format(x_pos, y_pos, temp))
+                x_pos += 1
+                cnt += 1
+                if cnt % 50 is 0:
+                    self.progress.emit(cnt)
+                    self.usleep(1)
+
+            y_pos += 1
+            x_pos = 0
         return
