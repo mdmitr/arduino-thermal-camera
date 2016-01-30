@@ -3,8 +3,10 @@ from random import random
 from PyQt5.QtCore import QObject, pyqtSignal
 
 class Command:
-    lr = 'lr'   # calls left-right servo setMicroSeconds, or getMicroseconds if parameter is ?
-    ud = 'ud'   # calls up-down servo setMicroSeconds, or getMicroseconds if parameter is ?
+    lr = 'lr'   # calls left-right servo writeMicroseconds
+    ud = 'ud'   # calls up-down servo writeMicroseconds
+    rlr = 'rlr'
+    rud = 'rud'
     s = 's'    # calls for both servos setMicroSeconds, or getMicroseconds if parameter is ?
     t = 't'    # get temperature at current point
 
