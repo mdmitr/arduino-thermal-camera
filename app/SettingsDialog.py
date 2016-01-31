@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import QDialogButtonBox, QProgressDialog
 import json
 
 from ArduinoCtrl import arduinoCtrl
-from CalibrateServoJob import CalibrateServoJob
 from Ui_SettingsDialog import Ui_SettingsDialog
 import Settings
 
@@ -16,8 +15,9 @@ class SettingsDialog(QtWidgets.QDialog, Ui_SettingsDialog):
         self.setupUi(self)
 
         self.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.handle_btnOk)
-        self.btn_lrCalibrate.clicked.connect(self.handle_lrCalibrate)
-        self.btn_udCalibrate.clicked.connect(self.handle_udCalibrate)
+        self.pb_test_lrMin.clicked.connect(self.handle_test_lrMin)
+        self.pb_test_lrMax.clicked.connect(self.handle_test_lrMax)
+        self.pb_test_lrCenter.clicked.connect(self.handle_test_lrCenter)
 
         self.setServoSpinMinMax(self.spin_lrMin)
         self.setServoSpinMinMax(self.spin_lrMax)
@@ -29,12 +29,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_SettingsDialog):
         self.spin_lrMin.setValue(Settings.settings['lrServoMin'])
         self.spin_lrMax.setValue(Settings.settings['lrServoMax'])
         self.spin_lrCenter.setValue(Settings.settings['lrServoCenter'])
-        self.cb_lrSwap.setChecked(Settings.settings['lrSwapDirection'])
-        
+
         self.spin_udMin.setValue(Settings.settings['udServoMin'])
         self.spin_udMax.setValue(Settings.settings['udServoMax'])
         self.spin_udCenter.setValue(Settings.settings['udServoCenter'])
-        self.cb_udSwap.setChecked(Settings.settings['udSwapDirection'])
 
         for i in range(4):
             self.cb_arduino_comport.addItem("COM{0}".format(i+1))
@@ -52,12 +50,10 @@ class SettingsDialog(QtWidgets.QDialog, Ui_SettingsDialog):
         Settings.settings['lrServoMin'] = self.spin_lrMin.value()
         Settings.settings['lrServoMax'] = self.spin_lrMax.value()
         Settings.settings['lrServoCenter'] = self.spin_lrCenter.value()
-        Settings.settings['lrSwapDirection'] = self.cb_lrSwap.isChecked()
-        
+
         Settings.settings['udServoMin'] = self.spin_udMin.value()
         Settings.settings['udServoMax'] = self.spin_udMax.value()
         Settings.settings['udServoCenter'] = self.spin_udCenter.value()
-        Settings.settings['udSwapDirection'] = self.cb_udSwap.isChecked()
 
         Settings.settings['comport'] = self.cb_arduino_comport.currentIndex()+1
 
@@ -81,44 +77,20 @@ class SettingsDialog(QtWidgets.QDialog, Ui_SettingsDialog):
             if self.cb_udSwap.isChecked():
                 min_ms, max_ms = max_ms, min_ms
 
-        calibrate_thread = CalibrateServoJob(servo_name, min_ms, max_ms)
-        progress = QProgressDialog('Calibrating servo', 'Stop', min_ms, max_ms)
-        arduinoCtrl.lr_servo_changed.connect(progress.setValue)
-        arduinoCtrl.ud_servo_changed.connect(progress.setValue)
-        calibrate_thread.start()
-        progress.exec_()
-        calibrate_thread.terminate()
-
-        if progress.wasCanceled():
-            if servo_name == 'lr':
-                return arduinoCtrl.lrServoMS
-            else:
-                return arduinoCtrl.udServoMS
-
         return -1
 
     @pyqtSlot()
-    def handle_lrCalibrate(self):
-        value = self.servo_calibrate('lr')
-        if value == -1:
-            return
-        if self.rb_lrMin.isChecked():
-            self.spin_lrMin.setValue(value)
-        if self.rb_lrMax.isChecked():
-            self.spin_lrMax.setValue(value)
-        if self.rb_lrCenter.isChecked():
-            self.spin_lrCenter.setValue(value)
+    def handle_test_lrMin(self):
+        value = self.spin_lrMin.value()
+        arduinoCtrl.set_lr_servo(value);
 
     @pyqtSlot()
-    def handle_udCalibrate(self):
-        value = self.servo_calibrate('ud')
-        if value == -1:
-            return
-        if self.rb_udMin.isChecked():
-            self.spin_udMin.setValue(value)
-        if self.rb_udMax.isChecked():
-            self.spin_udMax.setValue(value)
-        if self.rb_udCenter.isChecked():
-            self.spin_udCenter.setValue(value)
-        
-    
+    def handle_test_lrMax(self):
+        value = self.spin_lrMax.value()
+        arduinoCtrl.set_lr_servo(value);
+
+    @pyqtSlot()
+    def handle_test_lrCenter(self):
+        value = self.spin_lrCenter.value()
+        arduinoCtrl.set_lr_servo(value);
+

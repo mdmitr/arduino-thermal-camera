@@ -1,4 +1,3 @@
-from enum import Enum
 
 settings = {}
 
@@ -13,10 +12,8 @@ settings['lrServoMin'] = settings['servoMinMicroseconds']
 settings['lrServoMax'] = settings['servoMaxMicroseconds']
 settings['lrStep'] = 10
 settings['lrServoCenter'] = (settings['lrServoMin'] + settings['lrServoMax'])/2
-settings['lrSwapDirection'] = False
 
 settings['udServoMin'] = settings['servoMinMicroseconds']
 settings['udServoMax'] = settings['servoMaxMicroseconds']
 settings['udStep'] = 10
 settings['udServoCenter'] = (settings['udServoMin'] + settings['udServoMax'])/2
-settings['udSwapDirection'] = False

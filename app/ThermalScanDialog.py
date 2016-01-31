@@ -47,7 +47,6 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         self.sb_minTemp.setValue(Settings.settings['minTemp'])
         self.sb_maxTemp.setValue(Settings.settings['maxTemp'])
 
-        self.mArduinoCtrl = ArduinoCtrl()
         self.mSettingsDialog = None
 
         self.directory = "images"
