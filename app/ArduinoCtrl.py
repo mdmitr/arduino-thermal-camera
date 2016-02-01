@@ -32,10 +32,12 @@ class ArduinoCtrl(QObject):
         else:
             arduino_command = "{0} {1}\r\n".format(command, *params)
         self.arduino.write(str.encode(arduino_command))
+
+    def read_float(self):
         value = self.arduino.readline()
         if len(value) > 0:
             return float(value.decode()[:-2])
-        return -1
+        return None
 
     def set_lr_servo(self, ms):
         self.lrServoMS = int(self.execute_command(Command.lr, ms))
@@ -47,9 +49,7 @@ class ArduinoCtrl(QObject):
 
     def temperature(self, lr_ms, ud_ms):
         self.execute_command(Command.t, lr_ms, ud_ms)
-        return 30+random()*50
-
-
+        return 30+random()*50 #  self.read_float()
 
 
 arduinoCtrl = ArduinoCtrl()

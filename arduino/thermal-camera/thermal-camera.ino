@@ -30,14 +30,14 @@ void loop()
 void lr()
 {
   char * arg = cmd.next();
-  float ms = atof(arg);
+  float ms = atoi(arg);
   servo_lr.writeMicroseconds(ms);
 }
 
 void ud()
 {
   char * arg = cmd.next();
-  float ms = atof(arg);
+  float ms = atoi(arg);
   servo_ud.writeMicroseconds(ms);
 }
 

@@ -1,1 +1,1 @@
-{"servoMinMicroseconds": 500, "lrServoMin": 1700, "lrStep": 10, "udStep": 10, "udServoMax": 2500, "lrServoCenter": 1400, "lrServoMax": 1100, "udServoCenter": 1500, "comport": 3, "udServoMin": 500, "maxTemp": 150, "minTemp": -30, "servoMaxMicroseconds": 2500}
+{"udStep": 10, "lrServoMax": 1100, "udServoCenter": 1500, "maxTemp": 150, "comport": 3, "lrStep": 10, "lrServoCenter": 1400, "servoMinMicroseconds": 500, "minTemp": -30, "servoMaxMicroseconds": 2500, "udServoMin": 500, "lrServoMin": 1700, "udServoMax": 2500}
