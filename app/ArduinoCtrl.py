@@ -79,8 +79,8 @@ class ArduinoCtrl(QObject):
         self.execute_command(Command.rud)
         self.lrServoMS = self.read_int()
 
-    def temperature(self, lr_ms, ud_ms):
-        self.execute_command(Command.t, lr_ms, ud_ms)
+    def temperature(self):
+        self.execute_command(Command.t)
         return 30+random()*50 #  self.read_float()
 
 
