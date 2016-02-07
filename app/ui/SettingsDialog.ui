@@ -147,7 +147,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QSpinBox" name="db_lrStep"/>
+          <widget class="QSpinBox" name="spin_lrStep"/>
          </item>
         </layout>
        </widget>
@@ -250,7 +250,7 @@
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QSpinBox" name="sb_udStep"/>
+          <widget class="QSpinBox" name="spin_udStep"/>
          </item>
         </layout>
        </widget>
@@ -271,7 +271,7 @@
        <property name="flat">
         <bool>false</bool>
        </property>
-       <widget class="QLabel" name="label_10">
+       <widget class="QLabel" name="label_grid_info">
         <property name="geometry">
          <rect>
           <x>10</x>

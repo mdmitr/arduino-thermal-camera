@@ -1,6 +1,7 @@
 from math import nan
 from random import random
 import serial
+from time import sleep
 from PyQt5.QtCore import QObject, pyqtSignal
 from PyQt5.QtWidgets import QMessageBox
 import os.path
@@ -44,6 +45,7 @@ class ArduinoCtrl(QObject):
             arduino_command = "{0} {1}\r\n".format(command, *params)
         if self.arduino is not None:
             self.arduino.write(str.encode(arduino_command))
+            self.arduino.readline()
         else:
             print(str.encode(arduino_command)[:-2])
 
@@ -64,24 +66,28 @@ class ArduinoCtrl(QObject):
     def set_lr_servo(self, ms):
         self.lrServoMS = ms
         self.execute_command(Command.lr, ms)
+        #sleep(0.1)
         self.lr_servo_changed.emit(self.lrServoMS)
 
     def get_lr_servo(self):
         self.execute_command(Command.rlr)
         self.lrServoMS = self.read_int()
+        return self.lrServoMS
 
     def set_ud_servo(self, ms):
         self.udServoMS = ms
         self.execute_command(Command.ud, ms)
+        #sleep(0.1)
         self.ud_servo_changed.emit(self.udServoMS)
 
     def get_ud_servo(self):
         self.execute_command(Command.rud)
-        self.lrServoMS = self.read_int()
+        self.udServoMS = self.read_int()
+        return self.udServoMS
 
     def temperature(self):
         self.execute_command(Command.t)
-        return 30+random()*50 #  self.read_float()
+        return self.read_float()
 
 
 arduinoCtrl = ArduinoCtrl()

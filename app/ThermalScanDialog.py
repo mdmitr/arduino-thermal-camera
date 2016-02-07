@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import QProgressDialog, QApplication, QListWidgetItem
 
 #from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
-from ArduinoCtrl import ArduinoCtrl
+from ArduinoCtrl import arduinoCtrl
 from RectangeScanJob import RectangleScanJob
 from SettingsDialog import SettingsDialog
 from Ui_ThermalScanDialog import Ui_ThermalScanDialog
@@ -65,21 +65,18 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         max_x = self.mMatrix.shape[0]
         max_y = self.mMatrix.shape[1]
 
-        colorTable = [ qRgb(x, 0, 255-x) for x in range(255) ]
+        min_temp = self.mMatrix.min()
+        max_temp = self.mMatrix.max()
 
-        matr = interp(self.mMatrix, [-30, 150], [0, 256])
+        colorTable = [ qRgb(x, 0, 255-x) for x in np.linspace(0,255,128) ]
 
-        self.mQImage = QImage(self.mMatrix.astype(np.int8).data, max_x, max_y, QImage.Format_Indexed8)
+        matr = interp(self.mMatrix, [min_temp, max_temp], [0, 128]).astype(np.int8)
+
+        self.mQImage = QImage(matr.data, max_y, max_x, QImage.Format_Indexed8)
         self.mQImage.setColorTable(colorTable)
 
         minColor = Qt.blue
         maxColor = Qt.red
-
-        #for j in range(max_y):
-        #    for i in range(max_x):
-        #        self.mQImage.setPixel(i, j, minColor)
-        #self.mQImage.fill(minColor)
-
 
         self.mQPixmap = QPixmap.fromImage(self.mQImage)
         self.update_image_from_pixmap()
@@ -128,10 +125,13 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         ox_len = int(abs(Settings.settings['lrServoMax'] - Settings.settings['lrServoMin']) / Settings.settings['lrStep'])
         oy_len = int(abs(Settings.settings['udServoMax'] - Settings.settings['udServoMin']) / Settings.settings['udStep'])
 
+        arduinoCtrl.set_lr_servo(Settings.settings['lrServoMin'])
+        arduinoCtrl.set_ud_servo(Settings.settings['udServoMin'])
+
         total_points = ox_len * oy_len
         progress = QProgressDialog('Scanning thermal image', 'Stop', 0, total_points)
 
-        self.mMatrix = np.zeros((ox_len, oy_len))
+        self.mMatrix = np.zeros((oy_len, ox_len))*23
 
         self.mQPixmap = QPixmap(ox_len, oy_len)
         self.mQPixmap.fill()
@@ -140,6 +140,7 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         rectangleScanJob.new_value.connect(self.handle_temperature)
         rectangleScanJob.progress.connect(progress.setValue)
         rectangleScanJob.start()
+        #rectangleScanJob.run()
 
         progress.exec_()
 
@@ -151,9 +152,11 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
 
     def handle_temperature(self, xpos, ypos, temp):
 
-        self.mMatrix[xpos][ypos] = temp
+        print( '({0},{1}) : {2}'.format(xpos,ypos, temp))
+        self.mMatrix[self.mMatrix.shape[0] - 1 - ypos][xpos] = temp
 
-        #self.update_image_from_pixmap()
+        if xpos is 0:
+            self.update_pixmap_from_matrix()
 
         return
 
