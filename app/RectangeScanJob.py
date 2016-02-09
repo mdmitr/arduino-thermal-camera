@@ -21,8 +21,8 @@ class RectangleScanJob(QThread):
         self.ud_max_ms = s['udServoMax']
         self.ud_step_ms = s['udStep']
 
-        self.gridColumns = int(abs(self.lr_max_ms-self.lr_min_ms)/self.lr_step_ms)
-        self.gridRows = int(abs(self.ud_max_ms-self.ud_min_ms)/self.ud_step_ms)
+        self.gridColumns = int(abs(self.lr_max_ms-self.lr_min_ms)/self.lr_step_ms)+1
+        self.gridRows = int(abs(self.ud_max_ms-self.ud_min_ms)/self.ud_step_ms)+1
 
         self.lr_step_ms = self.lr_step_ms if self.lr_max_ms > self.lr_min_ms else -self.lr_step_ms
         self.ud_step_ms = self.ud_step_ms if self.ud_max_ms > self.ud_min_ms else -self.ud_step_ms
@@ -47,13 +47,15 @@ class RectangleScanJob(QThread):
             rowMS = self.row2ms(j)
             arduinoCtrl.set_ud_servo(rowMS)
             I = []
-            for i in I_forward: # if j%2 is 0 else I_backward:
+            for i in I_forward:# if j%2 is 0 else I_backward:
                 colMS = self.col2ms(i)
+
                 arduinoCtrl.set_lr_servo(colMS)
                 acolMS = arduinoCtrl.get_lr_servo()
                 if acolMS != colMS:
                     print ('{0},{1}'.format(colMS, acolMS))
                 temp = arduinoCtrl.temperature()
+                print('A[{},{}]={}'.format(j, i, temp))
                 self.new_value.emit(i, j, temp)
                 cnt += 1
 

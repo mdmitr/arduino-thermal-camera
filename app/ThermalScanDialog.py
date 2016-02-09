@@ -60,7 +60,7 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         for image in images:
             self.list_images.addItem(os.path.basename(image))
 
-    def update_pixmap_from_matrix(self):
+    def update_picture_from_matrix(self):
 
         max_x = self.mMatrix.shape[0]
         max_y = self.mMatrix.shape[1]
@@ -70,19 +70,16 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
 
         colorTable = [ qRgb(x, 0, 255-x) for x in np.linspace(0,255,128) ]
 
-        matr = interp(self.mMatrix, [min_temp, max_temp], [0, 128]).astype(np.int8)
+        matr = interp(self.mMatrix, [min_temp, max_temp], [0, 127]).astype(np.uint8)
 
-        self.mQImage = QImage(matr.data, max_y, max_x, QImage.Format_Indexed8)
+        self.mQImage = QImage(matr.data, matr.shape[1], matr.shape[0], matr.strides[0], QImage.Format_Indexed8)
         self.mQImage.setColorTable(colorTable)
 
-        minColor = Qt.blue
-        maxColor = Qt.red
-
         self.mQPixmap = QPixmap.fromImage(self.mQImage)
-        self.update_image_from_pixmap()
+        self.update_picture_from_pixmap()
         return
 
-    def update_image_from_pixmap(self):
+    def update_picture_from_pixmap(self):
         ww = self.mainImage.width() - 2
         hh = self.mainImage.height() - 2
         self.mainImage.setPixmap(
@@ -98,7 +95,7 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         self.mQImage = QImage(self.cvImage, width, height,
                               bytes_per_line, QImage.Format_RGB888)
         self.mQPixmap = QPixmap.fromImage(self.mQImage)
-        self.update_image_from_pixmap()
+        self.update_picture_from_pixmap()
 
     def image_resize_event(self, event):
         ww = self.mainImage.width() - 2
@@ -117,13 +114,13 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         self.mQImage = QImage(self.cvImage, width, height,
                               bytes_per_line, QImage.Format_RGB888)
         self.mQPixmap = QPixmap.fromImage(self.mQImage)
-        self.update_image_from_pixmap()
+        self.update_picture_from_pixmap()
         pass
 
     def handle_scan(self, param):
 
-        ox_len = int(abs(Settings.settings['lrServoMax'] - Settings.settings['lrServoMin']) / Settings.settings['lrStep'])
-        oy_len = int(abs(Settings.settings['udServoMax'] - Settings.settings['udServoMin']) / Settings.settings['udStep'])
+        ox_len = int(abs(Settings.settings['lrServoMax'] - Settings.settings['lrServoMin']) / Settings.settings['lrStep'])+1
+        oy_len = int(abs(Settings.settings['udServoMax'] - Settings.settings['udServoMin']) / Settings.settings['udStep'])+1
 
         arduinoCtrl.set_lr_servo(Settings.settings['lrServoMin'])
         arduinoCtrl.set_ud_servo(Settings.settings['udServoMin'])
@@ -131,7 +128,7 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         total_points = ox_len * oy_len
         progress = QProgressDialog('Scanning thermal image', 'Stop', 0, total_points)
 
-        self.mMatrix = np.zeros((oy_len, ox_len))*23
+        self.mMatrix = np.zeros((oy_len, ox_len))+23
 
         self.mQPixmap = QPixmap(ox_len, oy_len)
         self.mQPixmap.fill()
@@ -140,6 +137,7 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
         rectangleScanJob.new_value.connect(self.handle_temperature)
         rectangleScanJob.progress.connect(progress.setValue)
         rectangleScanJob.start()
+
         #rectangleScanJob.run()
 
         progress.exec_()
@@ -148,15 +146,15 @@ class ThermalScanDialog(QtWidgets.QDialog, Ui_ThermalScanDialog):
             rectangleScanJob.terminate()
             return
 
-        self.update_pixmap_from_matrix()
+        self.update_picture_from_matrix()
 
     def handle_temperature(self, xpos, ypos, temp):
 
-        print( '({0},{1}) : {2}'.format(xpos,ypos, temp))
+        #print( '({0},{1}) : {2}'.format(xpos,ypos, temp))
         self.mMatrix[self.mMatrix.shape[0] - 1 - ypos][xpos] = temp
 
         if xpos is 0:
-            self.update_pixmap_from_matrix()
+            self.update_picture_from_matrix()
 
         return
 
